@@ -1,0 +1,255 @@
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #dff4ff, #a9dcf5);
+        overflow: hidden;
+    }
+
+    .card {
+        width: 90%;
+        max-width: 450px;
+        min-height: 320px;
+        padding: 40px 24px;
+        background: rgba(255, 255, 255, 0.88);
+        border-radius: 28px;
+        box-shadow: 0 15px 45px #5da9d533;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .heart {
+        font-size: 55px;
+        margin-bottom: 15px;
+        animation: heartbeat 1.5s infinite;
+    }
+
+    h1 {
+        color: #367fae;
+        font-size: clamp(24px, 6vw, 32px);
+        margin: 10px 0;
+    }
+
+    p {
+        color: #709bb5;
+        font-size: 16px;
+        margin-bottom: 30px;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        min-height: 55px;
+    }
+
+    button {
+        border: none;
+        border-radius: 14px;
+        padding: 15px 32px;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+    }
+
+    #yes {
+        background: #77c6ee;
+        color: white;
+        box-shadow: 0 5px 15px #77c6ee55;
+    }
+
+    #yes:hover {
+        background: #54b5e6;
+        transform: scale(1.06);
+    }
+
+    #no {
+        background: #e7f4fb;
+        color: #5596bb;
+        border: 1px solid #c8e7f7;
+    }
+
+    #no:hover {
+        background: #d9effb;
+    }
+
+    .hint {
+        margin-top: 25px;
+        font-size: 12px;
+        color: #9bb8c9;
+    }
+
+    .floating-heart {
+        position: fixed;
+        bottom: -40px;
+        color: #ffffff99;
+        font-size: 25px;
+        pointer-events: none;
+        animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.12); }
+    }
+
+    @keyframes floatUp {
+        from {
+            transform: translateY(0) rotate(0);
+            opacity: 0;
+        }
+        20% { opacity: 1; }
+        to {
+            transform: translateY(-110vh) rotate(40deg);
+            opacity: 0;
+        }
+    }
+
+    /* Окно благодарности */
+    .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: #5c9fbd55;
+        backdrop-filter: blur(5px);
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        z-index: 10;
+    }
+
+    .overlay.show {
+        display: flex;
+    }
+
+    .thanks {
+        background: white;
+        padding: 40px 25px;
+        width: 100%;
+        max-width: 380px;
+        border-radius: 25px;
+        text-align: center;
+        box-shadow: 0 15px 50px #316e9233;
+        animation: appear 0.35s ease;
+    }
+
+    .thanks h2 {
+        color: #367fae;
+        font-size: 27px;
+    }
+
+    .thanks p {
+        line-height: 1.6;
+        color: #709bb5;
+    }
+
+    .thanks button {
+        background: #77c6ee;
+        color: white;
+        margin-top: 10px;
+    }
+
+    @keyframes appear {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition: none !important;
+        }
+    }
+</style>
+<main class="card">
+    <div class="heart">💙</div>
+
+    <h1>Прости меня, тётя?</h1>
+    <p>Мне очень хочется, чтобы мы помирились...</p>
+
+    <div class="buttons">
+        <button id="yes">Да 💗</button>
+        <button id="no">Нет 🙈</button>
+    </div>
+
+    <div class="hint">Я правда очень надеюсь 💙</div>
+</main>
+
+<div class="overlay" id="overlay">
+    <div class="thanks">
+<div style="font-size: 55px;">💙</div>
+        <h2>Спасибо, тётя!</h2>
+        <p>
+            Спасибо, что простила меня.<br>
+            Ты для меня очень важна! 💗
+        </p>
+        <button id="close">Обнять словами 💌</button>
+    </div>
+</div>
+
+<script>
+    const yes = document.getElementById("yes");
+    const no = document.getElementById("no");
+    const overlay = document.getElementById("overlay");
+    const close = document.getElementById("close");
+
+    // Кнопка "Да"
+    yes.addEventListener("click", () => {
+        overlay.classList.add("show");
+    });
+
+    // Кнопка "Нет" убегает от курсора
+    function moveNo() {
+        const padding = 10;
+
+        const maxX = window.innerWidth - no.offsetWidth - padding;
+        const maxY = window.innerHeight - no.offsetHeight - padding;
+
+        no.style.position = "fixed";
+        no.style.left = Math.max(padding, Math.random() * maxX) + "px";
+        no.style.top = Math.max(padding, Math.random() * maxY) + "px";
+        no.style.zIndex = "5";
+    }
+
+    no.addEventListener("pointerenter", moveNo);
+
+    // Для сенсорных экранов
+    no.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        moveNo();
+    });
+
+    // Закрытие благодарности
+    close.addEventListener("click", () => {
+        overlay.classList.remove("show");
+    });
+
+    // Плавающие сердечки
+    for (let i = 0; i < 12; i++) {
+        const heart = document.createElement("div");
+        heart.className = "floating-heart";
+        heart.textContent = "♡";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDelay = Math.random() * 8 + "s";
+        heart.style.animationDuration = (6 + Math.random() * 6) + "s";
+        heart.style.fontSize = (18 + Math.random() * 25) + "px";
+        document.body.appendChild(heart);
+    }
+</script>
